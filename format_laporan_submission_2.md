@@ -127,7 +127,13 @@ Berikut adalah 10 rekomendasi teratas untuk pengguna dengan ID 32830.
 0      3448          3.069020  Good Morning, Vietnam (1987)
 1      2791          2.938787              Airplane! (1980)
 2      4975          2.854144            Vanilla Sky (2001)
-...
+3      3552          2.844461             Caddyshack (1980)
+4      1285          2.748382               Heathers (1989)
+5      5400          2.693871     Sum of All Fears, The (2002)
+6      3396          2.693188     Muppet Movie, The (1979)
+7      1380          2.691832                  Grease (1978)
+8      1641          2.685996     Full Monty, The (1997)
+9      1997          2.663612         Exorcist, The (1973)
 ```
 
 ### Kelebihan dan Kekurangan Setiap Pendekatan
