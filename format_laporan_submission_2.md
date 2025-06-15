@@ -112,47 +112,36 @@ Berikut adalah 10 rekomendasi teratas untuk pengguna dengan ID 32830.
 ## Evaluation
 Evaluasi dilakukan untuk mengukur performa masing-masing model secara kuantitatif.
 
-Metrik Evaluasi
-Content-Based Filtering:
+### Metrik Evaluasi
+**1. Content-Based Filtering:**
 
-Precision@k: Mengukur seberapa banyak item yang relevan dari k item teratas yang direkomendasikan. Metrik ini menjawab pertanyaan: "Dari 10 film yang direkomendasikan, berapa persen yang benar-benar disukai pengguna?"
+- **Precision@k:** Mengukur seberapa banyak item yang relevan dari k item teratas yang direkomendasikan. Metrik ini menjawab pertanyaan: "Dari 10 film yang direkomendasikan, berapa persen yang benar-benar disukai pengguna?"
 
-Recall@k: Mengukur seberapa banyak item relevan yang berhasil ditemukan oleh sistem dalam k item teratas. Metrik ini menjawab: "Dari semua film yang disukai pengguna, berapa persen yang berhasil kami rekomendasikan?"
+- **Recall@k:** Mengukur seberapa banyak item relevan yang berhasil ditemukan oleh sistem dalam k item teratas. Metrik ini menjawab: "Dari semua film yang disukai pengguna, berapa persen yang berhasil kami rekomendasikan?"
 
-Collaborative Filtering (SVD):
+**2. Collaborative Filtering (SVD):**
 
 RMSE (Root Mean Squared Error): Mengukur rata-rata magnitudo kesalahan antara rating yang diprediksi oleh model dengan rating aktual yang diberikan oleh pengguna. Metrik ini dipilih karena masalahnya adalah prediksi nilai rating (regresi). Semakin kecil nilai RMSE, semakin akurat prediksi rating model. Formulanya adalah:
 
 
 $$
 \text{RMSE} = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (y_i - \hat{y}_i)^2}
-$$
+$$  
 
+Di mana $N$ adalah jumlah total rating pada data uji, $y_i$ adalah rating aktual, dan $\hat{y}_i$ adalah rating yang diprediksi oleh model.
 
-Di mana N adalah jumlah total rating pada data uji, y 
-i
-​
-  adalah rating aktual, dan  
-y
-^
-​
-  
-i
-​
-  adalah rating yang diprediksi oleh model.
+### Hasil Evaluasi
 
-Hasil Evaluasi
-Content-Based Model:
+**Content-Based Model:**
 
-Average Precision@10: 0.0320
+- Average Precision@10: 0.0320  
+- Average Recall@10: 0.0042
 
-Average Recall@10: 0.0042
+**Analisis:** Skor presisi dan recall yang sangat rendah ini menunjukkan bahwa model yang hanya berbasis genre tidak efektif dalam menangkap selera pengguna secara akurat. Dari 10 rekomendasi, rata-rata hanya 0.3 film yang relevan, dan model ini hanya berhasil menemukan sebagian kecil dari semua film yang mungkin disukai pengguna.
 
-Analisis: Skor presisi dan recall yang sangat rendah ini menunjukkan bahwa model yang hanya berbasis genre tidak efektif dalam menangkap selera pengguna secara akurat. Dari 10 rekomendasi, rata-rata hanya 0.3 film yang relevan, dan model ini hanya berhasil menemukan sebagian kecil dari semua film yang mungkin disukai pengguna.
+**Collaborative Filtering (SVD) Model:**
 
-Collaborative Filtering (SVD) Model:
+- RMSE on Test Data: 2.2440
 
-RMSE on Test Data: 2.2440
-
-Analisis: Nilai RMSE sebesar 2.24 pada skala rating 1-5 tergolong sangat tinggi. Ini berarti prediksi rating model rata-rata meleset sekitar 2.24 poin dari rating sebenarnya. Hal ini menunjukkan bahwa meskipun model ini baik untuk membuat daftar rekomendasi yang menarik, ia tidak akurat dalam memprediksi nilai rating spesifik.
+**Analisis:** Nilai RMSE sebesar 2.24 pada skala rating 1-5 tergolong sangat tinggi. Ini berarti prediksi rating model rata-rata meleset sekitar 2.24 poin dari rating sebenarnya. Hal ini menunjukkan bahwa meskipun model ini baik untuk membuat daftar rekomendasi yang menarik, ia tidak akurat dalam memprediksi nilai rating spesifik.
 **---Ini adalah bagian akhir laporan---**
