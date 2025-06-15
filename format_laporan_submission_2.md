@@ -2,79 +2,157 @@
 
 ## Project Overview
 
-Pada bagian ini, Kamu perlu menuliskan latar belakang yang relevan dengan proyek yang diangkat.
+Dalam era digital yang dibanjiri oleh konten, pengguna seringkali kesulitan menemukan film yang sesuai dengan selera mereka di antara ribuan pilihan yang tersedia. Fenomena ini, yang dikenal sebagai information overload atau kelebihan informasi, menjadi tantangan utama bagi platform penyedia konten. Sistem rekomendasi hadir sebagai solusi untuk mengatasi masalah ini dengan cara menyaring dan menyajikan konten yang paling relevan bagi setiap pengguna secara personal. Dengan menganalisis preferensi pengguna dan atribut film, sistem ini tidak hanya membantu pengguna menemukan konten baru yang mereka sukai, tetapi juga meningkatkan engagement dan loyalitas pengguna terhadap platform.  
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Jelaskan mengapa dan bagaimana masalah tersebut harus diselesaikan
-- Menyertakan hasil riset terkait atau referensi. Referensi yang diberikan harus berasal dari sumber yang kredibel dan author yang jelas.
-- Format Referensi dapat mengacu pada penulisan sitasi [IEEE](https://journals.ieeeauthorcenter.ieee.org/wp-content/uploads/sites/7/IEEE_Reference_Guide.pdf), [APA](https://www.mendeley.com/guides/apa-citation-guide/) atau secara umum seperti [di sini](https://penerbitdeepublish.com/menulis-buku-membuat-sitasi-dengan-mudah/)
-- Sumber yang bisa digunakan [Scholar](https://scholar.google.com/)
+Proyek ini bertujuan untuk membangun dan mengevaluasi dua jenis sistem rekomendasi film—Content-Based Filtering dan Collaborative Filtering—menggunakan dataset populer MovieLens 10M. Menurut riset oleh J. S. Breese, D. Heckerman, dan C. Kadie [1], pendekatan collaborative filtering telah terbukti efektif dalam memprediksi preferensi pengguna dengan menganalisis pola rating dari komunitas pengguna yang lebih besar. Proyek ini akan mengimplementasikan kedua pendekatan tersebut untuk memberikan perbandingan yang komprehensif mengenai kelebihan dan kekurangan masing-masing metode dalam konteks data film.
+
+Referensi:
+> [1] J. S. Breese, D. Heckerman, and C. Kadie, "Empirical analysis of predictive algorithms for collaborative filtering," *Proceedings of the Fourteenth conference on Uncertainty in artificial intelligence*, 1998, pp. 43–52.
 
 ## Business Understanding
-
-Pada bagian ini, Anda perlu menjelaskan proses klarifikasi masalah.
-
-Bagian laporan ini mencakup:
 
 ### Problem Statements
 
 Menjelaskan pernyataan masalah:
-- Pernyataan Masalah 1
-- Pernyataan Masalah 2
-- Pernyataan Masalah n
+- Bagaimana cara membangun sebuah sistem yang dapat memberikan rekomendasi film yang dipersonalisasi berdasarkan genre film yang pernah ditonton dan disukai oleh pengguna?
+
+- Bagaimana cara membangun sebuah sistem yang dapat merekomendasikan film berdasarkan pola rating dari pengguna lain yang memiliki selera serupa, tanpa memerlukan informasi tentang genre atau atribut film lainnya?
+
+- Bagaimana cara mengukur dan membandingkan performa dari kedua pendekatan sistem rekomendasi tersebut untuk mengetahui tingkat akurasi dan relevansinya?
 
 ### Goals
 
-Menjelaskan tujuan proyek yang menjawab pernyataan masalah:
-- Jawaban pernyataan masalah 1
-- Jawaban pernyataan masalah 2
-- Jawaban pernyataan masalah n
+- Mengembangkan model rekomendasi Content-Based Filtering yang mampu menyarankan film berdasarkan kesamaan genre.
 
-Semua poin di atas harus diuraikan dengan jelas. Anda bebas menuliskan berapa pernyataan masalah dan juga goals yang diinginkan.
+- Mengembangkan model rekomendasi Collaborative Filtering menggunakan teknik faktorisasi matriks (Singular Value Decomposition atau SVD) untuk memprediksi rating dan menemukan film baru berdasarkan selera pengguna.
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Menambahkan bagian “Solution Approach” yang menguraikan cara untuk meraih goals. Bagian ini dibuat dengan ketentuan sebagai berikut: 
+- Mengevaluasi kedua model menggunakan metrik yang sesuai (Precision & Recall untuk Content-Based, RMSE untuk Collaborative Filtering) untuk memahami kekuatan dan kelemahan masing-masing model.
 
-    ### Solution statements
-    - Mengajukan 2 atau lebih solution approach (algoritma atau pendekatan sistem rekomendasi).
+### Solution statements
+Untuk mencapai tujuan tersebut, dua pendekatan solusi akan diimplementasikan:
+
+1. Content-Based Filtering: Pendekatan ini akan merekomendasikan film dengan menganalisis kemiripan atribut film, khususnya pada fitur genres. Teks genre akan diubah menjadi representasi numerik menggunakan TF-IDF, dan kemiripan antar film akan dihitung menggunakan Cosine Similarity. Solusi ini menjawab masalah rekomendasi berbasis atribut.
+
+2. Collaborative Filtering: Pendekatan ini akan merekomendasikan film dengan mengidentifikasi pola tersembunyi (latent factors) dalam data rating pengguna. Teknik faktorisasi matriks, yaitu SVD, akan digunakan untuk memprediksi rating yang belum diberikan oleh pengguna dan merekomendasikan film dengan prediksi rating tertinggi. Solusi ini menjawab masalah rekomendasi berbasis komunitas.
 
 ## Data Understanding
-Paragraf awal bagian ini menjelaskan informasi mengenai jumlah data, kondisi data, dan informasi mengenai data yang digunakan. Sertakan juga sumber atau tautan untuk mengunduh dataset. Contoh: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data).
+Dataset yang digunakan dalam proyek ini adalah MovieLens 10M Dataset, yang berisi 10 juta rating film dari sekitar 72.000 pengguna untuk 10.000 film. Dataset ini merupakan sumber daya yang populer untuk penelitian dan pengembangan sistem rekomendasi karena ukurannya yang besar dan data rating yang otentik, yang memungkinkan pemodelan preferensi pengguna yang kompleks.
 
-Selanjutnya, uraikanlah seluruh variabel atau fitur pada data. Sebagai contoh:  
+Dataset ini dapat diunduh melalui Kaggle: [MovieLens 10M Dataset](https://www.kaggle.com/datasets/amirmotefaker/movielens-10m-dataset-latest-version).
 
-Variabel-variabel pada Restaurant UCI dataset adalah sebagai berikut:
-- accepts : merupakan jenis pembayaran yang diterima pada restoran tertentu.
-- cuisine : merupakan jenis masakan yang disajikan pada restoran.
-- dst
+Data terdiri dari dua file utama: movies.dat dan ratings.dat.
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data beserta insight atau exploratory data analysis.
+Variabel pada dataset movies.dat:
+
+- movie_id: ID unik untuk setiap film. (Tipe: numerik)
+- title: Judul film beserta tahun rilisnya. (Tipe: teks)
+- genres: Satu atau lebih genre yang diasosiasikan dengan film, dipisahkan oleh karakter |. (Tipe: teks)
+
+Variabel pada dataset ratings.dat:
+
+- user_id: ID unik untuk setiap pengguna. (Tipe: numerik)
+- movie_id: ID unik film yang diberi rating. (Tipe: numerik)
+- rating: Rating yang diberikan oleh pengguna, dengan skala 0.5 hingga 5.0. (Tipe: numerik)
+- timestamp: Waktu pemberian rating dalam format epoch time. (Tipe: numerik)
+
+## Data Exploration/Exploratory Data Analysis (EDA)
+Analisis data eksploratif dilakukan untuk memahami distribusi dan karakteristik data.
+
+1. **Distribusi Rating Film**  
+Visualisasi menunjukkan bahwa rating paling banyak diberikan pada nilai 4.0, 3.0, dan 5.0. Hal ini mengindikasikan bahwa pengguna cenderung memberikan rating pada film yang mereka sukai, dan dataset ini lebih banyak menangkap preferensi positif daripada negatif.  
+
+2. **Distribusi Genre Film**  
+Visualisasi genre menunjukkan bahwa Drama dan Comedy adalah genre yang paling dominan dalam dataset. Hal ini menciptakan popularity bias, di mana model kemungkinan besar akan lebih sering merekomendasikan film dari genre-genre populer ini karena jumlah datanya yang lebih banyak.  
 
 ## Data Preparation
-Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
+Beberapa langkah persiapan data dilakukan untuk memastikan data siap digunakan untuk pemodelan. Urutan proses ini sangat penting untuk menjamin kualitas data yang masuk ke dalam model.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan proses data preparation yang dilakukan
-- Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
+1. **Menghapus Kolom timestamp:** Kolom timestamp dihapus dari data rating karena waktu pemberian rating tidak relevan untuk model baseline yang akan dibangun. Alasan utamanya adalah untuk menyederhanakan dataset dan mengurangi penggunaan memori, karena fokus utama adalah pada preferensi (rating) itu sendiri, bukan pada kapan preferensi itu dicatat.
+2. **Sampling Pengguna Aktif:** Untuk efisiensi komputasi, pemodelan difokuskan pada pengguna yang paling aktif. Pengguna yang telah memberikan rating pada minimal 500 film dipilih. Alasan dari langkah ini adalah untuk memastikan model dilatih pada pengguna dengan data preferensi yang kaya dan historis, sehingga pola seleranya lebih mudah dipelajari oleh model collaborative filtering.
+3. **Menggabungkan Data:** Data rating yang telah disaring (ratings_sample) digabungkan dengan data film (movies) berdasarkan movie_id. Tujuannya adalah untuk menciptakan satu DataFrame utama yang berisi semua informasi yang dibutuhkan (user, film, rating, genre) dalam satu tempat.
+4. **Pemisahan Data (Train-Test Split):** Data yang telah digabungkan kemudian dibagi menjadi data latih (80%) dan data uji (20%). Langkah ini krusial untuk proses evaluasi model, di mana model akan dilatih pada data latih dan performanya akan diuji pada data uji yang belum pernah "dilihat" sebelumnya.
 
 ## Modeling
-Tahapan ini membahas mengenai model sisten rekomendasi yang Anda buat untuk menyelesaikan permasalahan. Sajikan top-N recommendation sebagai output.
+Dua model sistem rekomendasi dikembangkan untuk menyelesaikan permasalahan yang telah didefinisikan.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menyajikan dua solusi rekomendasi dengan algoritma yang berbeda.
-- Menjelaskan kelebihan dan kekurangan dari solusi/pendekatan yang dipilih.
+### 1. Content-Based Filtering
+Model ini merekomendasikan film berdasarkan kesamaan genre.
 
+Cara Kerja:  
+- TF-IDF Vectorization: Kolom genres diubah menjadi matriks numerik di mana setiap baris mewakili film dan setiap kolom mewakili sebuah genre. Nilai dalam matriks ini (bobot TF-IDF) merepresentasikan seberapa penting sebuah genre bagi sebuah film.  
+- Cosine Similarity: Metrik ini digunakan untuk menghitung skor kemiripan antara semua pasangan film berdasarkan matriks TF-IDF. Skornya berkisar dari 0 (tidak mirip) hingga 1 (identik).  
+- Top-N Recommendations: Untuk sebuah film referensi, sistem akan mengambil N film dengan skor cosine similarity tertinggi sebagai rekomendasi.
+
+Contoh Output:
+Berikut adalah 5 rekomendasi teratas untuk film 'Iron Man (2008)'.
+
+### 2. Collaborative Filtering (SVD)
+Model ini merekomendasikan film berdasarkan pola rating dari pengguna-pengguna yang memiliki selera serupa.  
+
+Cara Kerja:
+- ***User-Item Matrix*:** Sebuah matriks dibuat dengan pengguna sebagai baris, film sebagai kolom, dan rating sebagai nilainya. Sel yang kosong (film yang belum diberi rating) diisi dengan nilai 0.
+- ***SVD (Singular Value Decomposition)*:** Matriks ini dipecah menjadi tiga matriks yang lebih kecil yang menangkap "faktor laten" atau fitur tersembunyi dari pengguna dan film.
+- ***Prediksi Rating*:** Dengan mengalikan kembali ketiga matriks hasil SVD, kita mendapatkan matriks rating yang telah terisi penuh, termasuk prediksi rating untuk film yang belum pernah ditonton pengguna.
+- ***Top-N Recommendations*:** Untuk seorang pengguna, sistem akan merekomendasikan film yang belum ia tonton dengan prediksi rating tertinggi.
+
+Contoh Output:
+Berikut adalah 10 rekomendasi teratas untuk pengguna dengan ID 32830.
+
+### Kelebihan dan Kekurangan Setiap Pendekatan
+**Content-Based Filtering:**
+
+- **Kelebihan:** Dapat merekomendasikan item yang tidak populer, tidak memerlukan data pengguna lain, dan dapat memberikan penjelasan rekomendasi (misalnya, "direkomendasikan karena Anda suka genre Action").
+- **Kekurangan:** Terbatas pada fitur yang ada (hanya genre), sulit memberikan rekomendasi yang baru dan mengejutkan (serendipity), dan cenderung menghasilkan rekomendasi yang terlalu mirip (overspecialization).
+
+**Collaborative Filtering (SVD):**
+
+- **Kelebihan:** Mampu menemukan rekomendasi yang mengejutkan berdasarkan selera tersembunyi, tidak memerlukan fitur item (genre, aktor, dll.), dan seiring waktu dapat beradaptasi dengan perubahan selera pengguna.
+- **Kekurangan:** Mengalami masalah "cold start" (tidak bisa memberi rekomendasi untuk pengguna/item baru), lebih boros secara komputasi, dan rentan terhadap popularity bias.
+  
 ## Evaluation
-Pada bagian ini Anda perlu menyebutkan metrik evaluasi yang digunakan. Kemudian, jelaskan hasil proyek berdasarkan metrik evaluasi tersebut.
+Evaluasi dilakukan untuk mengukur performa masing-masing model secara kuantitatif.
 
-Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
+Metrik Evaluasi
+Content-Based Filtering:
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+Precision@k: Mengukur seberapa banyak item yang relevan dari k item teratas yang direkomendasikan. Metrik ini menjawab pertanyaan: "Dari 10 film yang direkomendasikan, berapa persen yang benar-benar disukai pengguna?"
 
+Recall@k: Mengukur seberapa banyak item relevan yang berhasil ditemukan oleh sistem dalam k item teratas. Metrik ini menjawab: "Dari semua film yang disukai pengguna, berapa persen yang berhasil kami rekomendasikan?"
+
+Collaborative Filtering (SVD):
+
+RMSE (Root Mean Squared Error): Mengukur rata-rata magnitudo kesalahan antara rating yang diprediksi oleh model dengan rating aktual yang diberikan oleh pengguna. Metrik ini dipilih karena masalahnya adalah prediksi nilai rating (regresi). Semakin kecil nilai RMSE, semakin akurat prediksi rating model. Formulanya adalah:
+
+
+$$
+\text{RMSE} = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (y_i - \hat{y}_i)^2}
+$$
+
+
+Di mana N adalah jumlah total rating pada data uji, y 
+i
+​
+  adalah rating aktual, dan  
+y
+^
+​
+  
+i
+​
+  adalah rating yang diprediksi oleh model.
+
+Hasil Evaluasi
+Content-Based Model:
+
+Average Precision@10: 0.0320
+
+Average Recall@10: 0.0042
+
+Analisis: Skor presisi dan recall yang sangat rendah ini menunjukkan bahwa model yang hanya berbasis genre tidak efektif dalam menangkap selera pengguna secara akurat. Dari 10 rekomendasi, rata-rata hanya 0.3 film yang relevan, dan model ini hanya berhasil menemukan sebagian kecil dari semua film yang mungkin disukai pengguna.
+
+Collaborative Filtering (SVD) Model:
+
+RMSE on Test Data: 2.2440
+
+Analisis: Nilai RMSE sebesar 2.24 pada skala rating 1-5 tergolong sangat tinggi. Ini berarti prediksi rating model rata-rata meleset sekitar 2.24 poin dari rating sebenarnya. Hal ini menunjukkan bahwa meskipun model ini baik untuk membuat daftar rekomendasi yang menarik, ia tidak akurat dalam memprediksi nilai rating spesifik.
 **---Ini adalah bagian akhir laporan---**
-
-_Catatan:_
-- _Anda dapat menambahkan gambar, kode, atau tabel ke dalam laporan jika diperlukan. Temukan caranya pada contoh dokumen markdown di situs editor [Dillinger](https://dillinger.io/), [Github Guides: Mastering markdown](https://guides.github.com/features/mastering-markdown/), atau sumber lain di internet. Semangat!_
-- Jika terdapat penjelasan yang harus menyertakan code snippet, tuliskan dengan sewajarnya. Tidak perlu menuliskan keseluruhan kode project, cukup bagian yang ingin dijelaskan saja.
