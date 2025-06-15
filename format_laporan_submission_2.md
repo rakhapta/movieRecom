@@ -74,14 +74,14 @@ Analisis data eksploratif dilakukan untuk memahami distribusi dan karakteristik 
 Visualisasi menunjukkan bahwa rating paling banyak diberikan pada nilai 4.0, 3.0, dan 5.0. Hal ini mengindikasikan bahwa pengguna cenderung memberikan rating pada film yang mereka sukai, dan dataset ini lebih banyak menangkap preferensi positif daripada negatif.  
 
 <div style="text-align: center;">
-  <img src="data/movieDistribution.png" alt="Histogram" width="500">
+  <img src="data/movieDistribution.png" alt="Histogram">
 </div>
 
 2. **Distribusi Genre Film**  
 Visualisasi genre menunjukkan bahwa Drama dan Comedy adalah genre yang paling dominan dalam dataset. Hal ini menciptakan popularity bias, di mana model kemungkinan besar akan lebih sering merekomendasikan film dari genre-genre populer ini karena jumlah datanya yang lebih banyak.  
 
 <div style="text-align: center;">
-  <img src="data/top10.png" alt="Histogram" width="500">
+  <img src="data/top10.png" alt="Histogram">
 </div>
 
 ## Data Preparation
