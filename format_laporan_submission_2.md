@@ -1,13 +1,25 @@
-# Laporan Proyek Machine Learning - Nama Anda
+# Laporan Proyek Machine Learning - Rakha Apta Pradhana D R
 
 ## Project Overview
 
-Dalam era digital yang dibanjiri oleh konten, pengguna seringkali kesulitan menemukan film yang sesuai dengan selera mereka di antara ribuan pilihan yang tersedia. Fenomena ini, yang dikenal sebagai information overload atau kelebihan informasi, menjadi tantangan utama bagi platform penyedia konten. Sistem rekomendasi hadir sebagai solusi untuk mengatasi masalah ini dengan cara menyaring dan menyajikan konten yang paling relevan bagi setiap pengguna secara personal. Dengan menganalisis preferensi pengguna dan atribut film, sistem ini tidak hanya membantu pengguna menemukan konten baru yang mereka sukai, tetapi juga meningkatkan engagement dan loyalitas pengguna terhadap platform.  
+Dalam era digital yang dibanjiri oleh konten, pengguna seringkali kesulitan menemukan film yang sesuai dengan selera mereka di antara ribuan pilihan yang tersedia. Fenomena ini, yang dikenal sebagai information overload atau kelebihan informasi, menjadi tantangan utama bagi platform penyedia konten seperti Netflix, Amazon Prime, dan lainnya. Sistem rekomendasi hadir sebagai solusi untuk mengatasi masalah ini dengan cara menyaring dan menyajikan konten yang paling relevan bagi setiap pengguna secara personal. Dengan menganalisis preferensi pengguna dan atribut film, sistem ini tidak hanya membantu pengguna menemukan konten baru yang mereka sukai, tetapi juga secara signifikan meningkatkan engagement dan loyalitas pengguna terhadap platform.
 
-Proyek ini bertujuan untuk membangun dan mengevaluasi dua jenis sistem rekomendasi film—Content-Based Filtering dan Collaborative Filtering—menggunakan dataset populer MovieLens 10M. Menurut riset oleh J. S. Breese, D. Heckerman, dan C. Kadie [1], pendekatan collaborative filtering telah terbukti efektif dalam memprediksi preferensi pengguna dengan menganalisis pola rating dari komunitas pengguna yang lebih besar. Proyek ini akan mengimplementasikan kedua pendekatan tersebut untuk memberikan perbandingan yang komprehensif mengenai kelebihan dan kekurangan masing-masing metode dalam konteks data film.
+### Mengapa dan Bagaimana Masalah Harus Diselesaikan:
+
+Proyek ini akan membangun dua jenis sistem rekomendasi:
+
+1. Content-Based Filtering: Menganalisis atribut film untuk menemukan film serupa.
+2. Collaborative Filtering: Menganalisis pola rating dari komunitas pengguna untuk menemukan pengguna dengan selera serupa.
+
+Dengan membandingkan kedua pendekatan ini, kita dapat memahami metode mana yang lebih efektif untuk dataset yang digunakan.  
+
+### Hasil Riset Terkait atau Referensi:
+
+Banyak penelitian telah membuktikan efektivitas sistem rekomendasi. Menurut riset oleh J. S. Breese, D. Heckerman, dan C. Kadie [1], pendekatan collaborative filtering telah terbukti menjadi salah satu metode yang paling berhasil dalam memprediksi preferensi pengguna dengan menganalisis pola rating dari komunitas pengguna yang lebih besar. Riset lain oleh Isinkaye, Folajimi, dan Ojokoh (2015) juga menyoroti berbagai teknik, termasuk content-based dan collaborative, sebagai fondasi utama dalam sistem rekomendasi modern [2]. Proyek ini akan mengimplementasikan kedua pendekatan tersebut untuk memberikan perbandingan yang komprehensif.
 
 Referensi:
 > [1] J. S. Breese, D. Heckerman, and C. Kadie, "Empirical analysis of predictive algorithms for collaborative filtering," *Proceedings of the Fourteenth conference on Uncertainty in artificial intelligence*, 1998, pp. 43–52.
+> [2] F. O. Isinkaye, Y. O. Folajimi, and B. A. Ojokoh, "Recommendation systems: Principles, methods and evaluation," Egyptian Informatics Journal, vol. 16, no. 3, pp. 261-273, 2015.
 
 ## Business Understanding
 
@@ -86,6 +98,17 @@ Cara Kerja:
 Contoh Output:
 Berikut adalah 5 rekomendasi teratas untuk film 'Iron Man (2008)'.
 
+```text
+--- Recommendations for 'Iron Man (2008)' ---
+movie_id
+260     Star Wars: Episode IV - A New Hope (a.k.a. Sta...
+316                                       Stargate (1994)
+442                                 Demolition Man (1993)
+1196    Star Wars: Episode V - The Empire Strikes Back...
+1210    Star Wars: Episode VI - Return of the Jedi (1983)
+Name: title, dtype: object
+```
+
 ### 2. Collaborative Filtering (SVD)
 Model ini merekomendasikan film berdasarkan pola rating dari pengguna-pengguna yang memiliki selera serupa.  
 
@@ -97,6 +120,15 @@ Cara Kerja:
 
 Contoh Output:
 Berikut adalah 10 rekomendasi teratas untuk pengguna dengan ID 32830.
+
+```text
+--- Top Movie Recommendations for User ID 32830 ---
+   movie_id  predicted_rating                         title
+0      3448          3.069020  Good Morning, Vietnam (1987)
+1      2791          2.938787              Airplane! (1980)
+2      4975          2.854144            Vanilla Sky (2001)
+...
+```
 
 ### Kelebihan dan Kekurangan Setiap Pendekatan
 **Content-Based Filtering:**
@@ -144,4 +176,3 @@ Di mana $N$ adalah jumlah total rating pada data uji, $y_i$ adalah rating aktual
 - RMSE on Test Data: 2.2440
 
 **Analisis:** Nilai RMSE sebesar 2.24 pada skala rating 1-5 tergolong sangat tinggi. Ini berarti prediksi rating model rata-rata meleset sekitar 2.24 poin dari rating sebenarnya. Hal ini menunjukkan bahwa meskipun model ini baik untuk membuat daftar rekomendasi yang menarik, ia tidak akurat dalam memprediksi nilai rating spesifik.
-**---Ini adalah bagian akhir laporan---**
