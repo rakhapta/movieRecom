@@ -190,3 +190,12 @@ Di mana $N$ adalah jumlah total rating pada data uji, $y_i$ adalah rating aktual
 - RMSE on Test Data: 2.2440
 
 **Analisis:** Nilai RMSE sebesar 2.24 pada skala rating 1-5 tergolong sangat tinggi. Ini berarti prediksi rating model rata-rata meleset sekitar 2.24 poin dari rating sebenarnya. Hal ini menunjukkan bahwa meskipun model ini baik untuk membuat daftar rekomendasi yang menarik, ia tidak akurat dalam memprediksi nilai rating spesifik.
+
+**Rencana Peningkatan:**
+
+- Optimasi hyperparameter: Melakukan tuning terhadap jumlah latent factors dan nilai regularisasi dapat membantu menurunkan nilai error dan meningkatkan akurasi prediksi.
+- Eksplorasi metode alternatif: Teknik seperti SVD++ atau Alternating Least Squares (ALS) bisa menjadi pilihan yang lebih stabil untuk menangani data sparse.
+- Normalisasi data rating: Menerapkan normalisasi terhadap rating pengguna sebelum proses faktorisasi dapat mengurangi bias akibat perbedaan skala penilaian antar pengguna.
+- Penanganan cold-start: Untuk pengguna atau film baru, pendekatan hybrid atau pemanfaatan metadata (jika tersedia) dapat membantu menghasilkan rekomendasi yang lebih tepat.
+
+Pengembangan ke arah ini dapat membantu sistem menjadi lebih responsif terhadap preferensi pengguna dan lebih akurat dalam menyarankan film yang relevan, meskipun bekerja dalam batasan data yang tersedia saat ini.
