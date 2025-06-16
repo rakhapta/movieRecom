@@ -87,25 +87,38 @@ Visualisasi genre menunjukkan bahwa Drama dan Comedy adalah genre yang paling do
 ## Data Preparation
 Beberapa langkah persiapan data dilakukan untuk memastikan data siap digunakan untuk pemodelan. Urutan proses ini sangat penting untuk menjamin kualitas data yang masuk ke dalam model.
 
-1. **Menghapus Kolom timestamp:** Kolom timestamp dihapus dari data rating karena waktu pemberian rating tidak relevan untuk model baseline yang akan dibangun. Alasan utamanya adalah untuk menyederhanakan dataset dan mengurangi penggunaan memori, karena fokus utama adalah pada preferensi (rating) itu sendiri, bukan pada kapan preferensi itu dicatat.
-2. **Sampling Pengguna Aktif:** Untuk efisiensi komputasi, pemodelan difokuskan pada pengguna yang paling aktif. Pengguna yang telah memberikan rating pada minimal 500 film dipilih. Alasan dari langkah ini adalah untuk memastikan model dilatih pada pengguna dengan data preferensi yang kaya dan historis, sehingga pola seleranya lebih mudah dipelajari oleh model collaborative filtering.
-3. **Menggabungkan Data:** Data rating yang telah disaring (ratings_sample) digabungkan dengan data film (movies) berdasarkan movie_id. Tujuannya adalah untuk menciptakan satu DataFrame utama yang berisi semua informasi yang dibutuhkan (user, film, rating, genre) dalam satu tempat.
-4. **Pemisahan Data (Train-Test Split):** Data yang telah digabungkan kemudian dibagi menjadi data latih (80%) dan data uji (20%). Langkah ini krusial untuk proses evaluasi model, di mana model akan dilatih pada data latih dan performanya akan diuji pada data uji yang belum pernah "dilihat" sebelumnya.
+1.  **Pembersihan Awal(Base prep)**:
+    - **Menghapus Kolom `timestamp`**: Kolom timestamp dihapus dari data rating karena waktu pemberian rating tidak relevan untuk model baseline yang akan dibangun. Alasan utamanya adalah untuk menyederhanakan dataset dan mengurangi penggunaan memori, karena fokus utama adalah pada preferensi (rating) itu sendiri, bukan pada kapan preferensi itu dicatat.
+
+2.  **Filter dan Penggabungan Data**:
+    - **Sampling Pengguna Aktif**: Untuk efisiensi komputasi, pemodelan difokuskan pada pengguna yang paling aktif. Pengguna yang telah memberikan rating pada minimal 500 film dipilih. Alasan dari langkah ini adalah untuk memastikan model dilatih pada pengguna dengan data preferensi yang kaya dan historis, sehingga pola seleranya lebih mudah dipelajari oleh model collaborative filtering.
+    - **Penggabungan Data**: Data rating yang telah disaring (ratings_sample) digabungkan dengan data film (movies) berdasarkan `movie_id`. Tujuannya adalah untuk menciptakan satu DataFrame utama yang berisi semua informasi yang dibutuhkan (user, film, rating, genre) dalam satu tempat.
+
+3.  **Persiapan Data untuk Content-Based Filtering**:
+    - **Membuat Lookup Table Film**: Sebuah DataFrame baru (`movies_df`) dibuat dari data film yang unik, dengan `movie_id` ditetapkan sebagai indeks (`set_index`). Ini berfungsi sebagai kamus atau *lookup table* yang efisien untuk mengambil informasi film berdasarkan ID-nya.
+    - **Transformasi Fitur `genres`**: Karakter `|` pada kolom `genres` diganti dengan spasi (misal: "Adventure|Sci-Fi" menjadi "Adventure Sci-Fi"). Langkah ini penting agar setiap genre bisa dianggap sebagai kata atau "token" terpisah oleh `TfidfVectorizer`.
+    - **Ekstraksi Fitur dengan TF-IDF**: Kolom `genres` yang sudah bersih diubah menjadi matriks numerik **TF-IDF**. Proses ini tidak hanya menghitung kemunculan sebuah genre, tetapi juga memberinya bobot berdasarkan seberapa unik genre tersebut di seluruh dataset. Hasilnya adalah representasi matematis dari "profil genre" setiap film, yang siap digunakan untuk menghitung kemiripan.
+    - **Pemetaan Judul ke ID Film**: Dibuat sebuah `pandas Series` bernama `indices` yang berfungsi sebagai "kamus terbalik" yang memetakan **judul film ke `movie_id`**. Tujuannya adalah agar fungsi rekomendasi dapat dengan cepat menemukan indeks sebuah film di dalam matriks kemiripan (`cosine_sim`) hanya dengan menggunakan judulnya sebagai input.
+
+4.  **Persiapan Data untuk Collaborative Filtering**:
+    - **Pemisahan Data (Train-Test Split)**: `df` yang telah digabungkan dibagi menjadi data latih (80%) dan data uji (20%). Ini penting agar kita bisa melatih model pada satu set data dan menguji performanya pada set data lain yang belum pernah dilihat sebelumnya.
+    - **Pembuatan Matriks User-Item**: Data latih `train_df` diubah strukturnya menggunakan `pivot_table` menjadi sebuah matriks besar, di mana baris merepresentasikan pengguna, kolom merepresentasikan film, dan sel berisi rating. Sel yang kosong, yang berarti pengguna belum memberi rating untuk film tersebut, diisi dengan nilai 0.
+    - **Normalisasi Rating (Mean-Centering)**: Ini adalah langkah kunci. Rating di dalam matriks dinormalisasi dengan cara mengurangi setiap rating dengan rata-rata rating yang diberikan oleh pengguna tersebut. Proses ini menghilangkan bias personal (misalnya, pengguna A yang selalu memberi rating tinggi vs. pengguna B yang pelit rating). Hasilnya, model SVD akan belajar dari preferensi relatif pengguna ("apakah pengguna ini menyukai film X *lebih dari rata-rata film lainnya?*"), bukan dari nilai rating absolutnya. Ini membuat model lebih akurat.
+    - **Pembuatan Tabel Informasi Film**: Dibuat sebuah DataFrame `movie_info` yang hanya berisi `movie_id` dan `title`. Tabel ringan ini digunakan oleh fungsi rekomendasi SVD untuk mengambil judul film yang sesuai dari `movie_id` yang direkomendasikan, agar hasilnya dapat ditampilkan dengan nama film yang jelas kepada pengguna.
 
 ## Modeling
-Dua model sistem rekomendasi dikembangkan untuk menyelesaikan permasalahan yang telah didefinisikan.
+Dua model sistem rekomendasi dikembangkan untuk menyelesaikan permasalahan yang telah didefinisikan. Setiap model menggunakan pendekatan yang berbeda secara fundamental untuk menghasilkan rekomendasi.
 
 ### 1. Content-Based Filtering
-Model ini merekomendasikan film berdasarkan kesamaan genre.
+Model ini merekomendasikan film berdasarkan kemiripan atribut atau "konten" dari film itu sendiri, dalam kasus ini adalah genre.
 
-Cara Kerja:  
-- TF-IDF Vectorization: Kolom genres diubah menjadi matriks numerik di mana setiap baris mewakili film dan setiap kolom mewakili sebuah genre. Nilai dalam matriks ini (bobot TF-IDF) merepresentasikan seberapa penting sebuah genre bagi sebuah film.  
-- Cosine Similarity: Metrik ini digunakan untuk menghitung skor kemiripan antara semua pasangan film berdasarkan matriks TF-IDF. Skornya berkisar dari 0 (tidak mirip) hingga 1 (identik).  
-- Top-N Recommendations: Untuk sebuah film referensi, sistem akan mengambil N film dengan skor cosine similarity tertinggi sebagai rekomendasi.
+**Cara Kerja:**
+Model ini bekerja seperti "pencocokan profil". Pada tahap *Data Preparation*, kita telah mengubah genre setiap film menjadi sebuah profil numerik (matriks TF-IDF).
+- **Cosine Similarity**: Metrik ini kemudian digunakan untuk menghitung skor kemiripan antara "profil genre" dari semua pasangan film. Skornya berkisar dari 0 (sama sekali tidak mirip) hingga 1 (identik secara genre).
+- **Top-N Recommendations**: Ketika Anda menyukai sebuah film, sistem akan mencari film-film lain dengan profil genre yang paling mirip berdasarkan skor *cosine similarity* tertinggi, lalu menyajikannya sebagai rekomendasi teratas.
 
-Contoh Output:
-Berikut adalah 5 rekomendasi teratas untuk film 'Iron Man (2008)'.
-
+**Contoh Output:**
+Berikut adalah 5 rekomendasi teratas untuk film 'Iron Man (2008)', yang didominasi oleh film aksi dan fiksi ilmiah lain.
 ```text
 --- Recommendations for 'Iron Man (2008)' ---
 movie_id
@@ -116,32 +129,29 @@ movie_id
 1210    Star Wars: Episode VI - Return of the Jedi (1983)
 Name: title, dtype: object
 ```
-
 ### 2. Collaborative Filtering (SVD)
 Model ini merekomendasikan film berdasarkan pola rating dari pengguna-pengguna yang memiliki selera serupa.  
 
-Cara Kerja:
-- ***User-Item Matrix*:** Sebuah matriks dibuat dengan pengguna sebagai baris, film sebagai kolom, dan rating sebagai nilainya. Sel yang kosong (film yang belum diberi rating) diisi dengan nilai 0.
-- ***SVD (Singular Value Decomposition)*:** Matriks ini dipecah menjadi tiga matriks yang lebih kecil yang menangkap "faktor laten" atau fitur tersembunyi dari pengguna dan film.
-- ***Prediksi Rating*:** Dengan mengalikan kembali ketiga matriks hasil SVD, kita mendapatkan matriks rating yang telah terisi penuh, termasuk prediksi rating untuk film yang belum pernah ditonton pengguna.
-- ***Top-N Recommendations*:** Untuk seorang pengguna, sistem akan merekomendasikan film yang belum ia tonton dengan prediksi rating tertinggi.
+**Cara Kerja:**
+- **Dekomposisi Matriks**: Teknik **SVD (Singular Value Decomposition)** digunakan untuk memecah matriks user-item yang besar menjadi tiga matriks yang lebih kecil (`U`, `sigma`, dan `Vt`) yang menangkap "faktor laten" atau fitur tersembunyi dari pengguna dan film.
+- **Prediksi Rating**: Dengan mengalikan kembali ketiga matriks hasil dekomposisi, kita mendapatkan matriks rating yang telah terisi penuh, termasuk prediksi rating untuk film yang belum pernah ditonton pengguna.
+- **Top-N Recommendations**: Untuk seorang pengguna, sistem akan merekomendasikan film yang belum ia tonton dengan prediksi rating tertinggi.
 
-Contoh Output:
-Berikut adalah 10 rekomendasi teratas untuk pengguna dengan ID 32830.
-
+**Contoh Output:**
+Berikut adalah 10 rekomendasi teratas untuk pengguna dengan ID 45067, yang dihasilkan berdasarkan prediksi rating tertinggi untuk film yang belum ia tonton.
 ```text
---- Top Movie Recommendations for User ID 32830 ---
-   movie_id  predicted_rating                         title
-0      3448          3.069020  Good Morning, Vietnam (1987)
-1      2791          2.938787              Airplane! (1980)
-2      4975          2.854144            Vanilla Sky (2001)
-3      3552          2.844461             Caddyshack (1980)
-4      1285          2.748382               Heathers (1989)
-5      5400          2.693871     Sum of All Fears, The (2002)
-6      3396          2.693188     Muppet Movie, The (1979)
-7      1380          2.691832                  Grease (1978)
-8      1641          2.685996     Full Monty, The (1997)
-9      1997          2.663612         Exorcist, The (1973)
+--- Top Movie Recommendations for User ID 45067 ---
+   movie_id  predicted_rating                       title
+0      1639          2.476180          Chasing Amy (1997)
+1      1704          2.411625    Good Will Hunting (1997)
+2      2100          2.355873               Splash (1984)
+3      3882          2.207082          Bring It On (2000)
+4      3039          2.173973       Trading Places (1983)
+5      3160          2.106620             Magnolia (1999)
+6       296          2.103046         Pulp Fiction (1994)
+7      3916          2.003338  Remember the Titans (2000)
+8       508          1.974391         Philadelphia (1993)
+9      1680          1.955535        Sliding Doors (1998)
 ```
 
 ### Kelebihan dan Kekurangan Setiap Pendekatan
