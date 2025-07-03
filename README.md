@@ -1,4 +1,4 @@
-# Animal Classification Project
+# Movie Recomendation Project
 
 ## Project Overview
 
